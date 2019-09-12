@@ -1,0 +1,45 @@
+{
+"barred":[
+	{
+		"exp":"fandom"
+	},
+	{
+        "exp": "reddit"
+    },
+    {
+        "exp": "facebook"
+    },
+    {
+        "exp": "readms",
+        "allowIf": {
+            "monthday": [
+                2
+            ]
+        }
+    },
+    {
+        "exp": "youtube",
+        "allowIf": {
+            "monthday": [
+                2
+            ]
+        }
+    },
+    {
+        "exp": "manga",
+        "allowIf": {
+            "monthday": [
+                2
+            ]
+        }
+    },
+    {
+        "exp": "quora",
+        "allowIf": {
+            "monthday": [
+                2
+            ]
+        }
+    }
+]
+}
