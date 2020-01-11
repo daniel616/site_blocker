@@ -1,7 +1,7 @@
 {
-	"name": "simple blocker",
+	"name": "flexible blocker",
 	"version": "1.0",
-	"description": "a rudimentary website blocker",
+	"description": "a very flexible website blocker",
 	"permissions": [
 		"declarativeContent",
 		"storage",
