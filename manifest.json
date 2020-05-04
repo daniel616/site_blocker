@@ -5,9 +5,11 @@
 	"permissions": [
 		"declarativeContent",
 		"storage",
-		"tabs"
+		"tabs",
+		"activeTab"
 	],
 	"background": {
+
 		"scripts": ["background.js"],
 		"persistent": false
 	},
