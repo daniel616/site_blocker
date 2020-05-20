@@ -9,7 +9,13 @@ chrome.runtime.onMessage.addListener(
 
         document.getElementById("explanation").innerText=reason;
         document.getElementById("continue").onclick = function () {
-            location.href = request.destUrl;
+            let duration=document.getElementById("duration").value;
+            debugger;
+            chrome.runtime.sendMessage({
+                disableFor:duration,
+                restriction:request.reason.exp,
+                redirect:request.destUrl});
+            //location.href = request.destUrl;
         };
 
     }

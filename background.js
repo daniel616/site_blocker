@@ -7,29 +7,7 @@ let ALLOW = 'A';
 let BLOCK = 'B';
 let WARN = 'W';
 
-let barred = [
-    {
-        exp: "viz.com",
-        allowIf: {
-            timeRanges: [[1130, 1300], [1700, 2200]]
-        }
-    },
-    {
-        exp: "youtube.com",
-        warnOnly: true
-    },
-    {
-        exp: "fandom"
-    },
-    {
-        exp: "netflix",
-        allowIf: {
-            timeRanges: [[1130, 1300], [1700, 2200]]
-        }
-    }];
-
-
-function blockResult(url) {
+function blockResult(url,barred) {
     for (var i = 0; i < barred.length; i++) {
         let currRule = barred[i];
         let regexp = currRule.exp;
@@ -55,7 +33,12 @@ function blockResult(url) {
     return {
         value: ALLOW
     };
+}
 
+function getTimeArray(){
+    var d = new Date();
+    var n = d.toLocaleTimeString("default", {"hour12": false});
+    return n.split(":");
 }
 
 function checkAllow(allowCond) {
@@ -70,9 +53,7 @@ function checkAllow(allowCond) {
         if (!passed) return false;
     }
     if (allowCond.hasOwnProperty("timeRanges")) {
-        var d = new Date();
-        var n = d.toLocaleTimeString("default", {"hour12": false});
-        n = n.split(":").slice(0, 2).join("");
+        let n = getTimeArray().slice(0,2).join("");
         let val = parseInt(n);
         var inRange = false;
         for (var i = 0; i < allowCond.timeRanges.length; i++) {
@@ -99,44 +80,77 @@ function checkAllow(allowCond) {
 
 var m_history={};
 
+var disableTil={};
+
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (tab.status !== 'complete'||!(tab.hasOwnProperty('url'))) {
+    if (!(tab.hasOwnProperty('url'))) {
         return;
     }
 
-    let result = blockResult(tab.url);
-    if(result.value===ALLOW){
-        return;
-    }
-    result.destUrl=tab.url;
+    chrome.storage.sync.get(['rules'],function(response) {
+        console.log('rules:',response);
+        var rules;
+        if(chrome.runtime.lastError===undefined){
+            rules= response['rules'];
+            console.log("successful form retrieval:", rules);
+        }else{
+
+            console.log("form retrieval fail:",chrome.runtime.lastError);
+            rules= [];
+        }
+        console.log("response:",response);
 
 
-    if (result.value === BLOCK) {
-        //console.log("redirect to "+blockPage);
-        chrome.tabs.update(tabId, {url: blockPage});
-    } else if (result.value === WARN) {
-        console.log("id:",tabId,"prev page:",prev);
-        if(prev===warnPage){
+        let result = blockResult(tab.url,rules);
+        if(result.value===ALLOW){
             return;
         }
-        console.log("blocked value:", result);
-        chrome.tabs.update(tabId, {url: warnPage}, function (t) {
-            console.log(tabId);
-            var listener = function (tabId, changeInfo, tab2) {
-                if (tabId === t.id && tab2.status === 'complete') {
-                    console.log("changeinfo:", changeInfo, "tab:", tab2);
-                    chrome.tabs.onUpdated.removeListener(listener);
+        result.destUrl=tab.url;
 
 
+        if (result.value === BLOCK) {
+            //console.log("redirect to "+blockPage);
+            chrome.tabs.update(tabId, {url: blockPage});
+        } else if (result.value === WARN) {
+            let exp = result.reason.exp;
+            let curlim=localStorage.getItem(exp);
+            if(curlim!==null&&epochMins()<=curlim){
+                return;
+            }
+            chrome.tabs.update(tabId, {url: warnPage}, function (t) {
+                var listener = function (tabId, changeInfo, tab2) {
+                    if (tabId === t.id && tab2.status === 'complete') {
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        chrome.tabs.sendMessage(tabId, result);
+                    }
+                };
+                chrome.tabs.onUpdated.addListener(listener);
 
-                    chrome.tabs.sendMessage(tabId, result);
-                }
-            };
-            chrome.tabs.onUpdated.addListener(listener);
+
+            });
+
+        }
 
 
-        });
-
-    }
+    });
 });
 
+function epochMins(){
+    let t = new Date().getTime();
+    return t/(60*1000);
+}
+
+chrome.runtime.onMessage.addListener(
+    function(request,sender,sendResponse) {
+        let exp = request.restriction;
+        let duration= parseInt(request.disableFor);
+        let redirect= request.redirect;
+        let t = new Date().getTime();
+        let curmin=t/(60*1000);
+        localStorage.setItem(exp,curmin+duration);
+        //disableTil[exp]=curmin+duration;
+        chrome.tabs.update(sender.tab.id, {url: redirect});
+        //sender.tab
+
+    }
+);
