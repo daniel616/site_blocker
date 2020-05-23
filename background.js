@@ -5,7 +5,7 @@ let warnPage = chrome.extension.getURL('warnPage.html');
 
 let ALLOW = 'A';
 let BLOCK = 'B';
-let WARN = 'W';
+let WARN  = 'W';
 
 function blockResult(url,barred) {
     for (var i = 0; i < barred.length; i++) {
@@ -25,8 +25,6 @@ function blockResult(url,barred) {
                 value: value,
                 reason: currRule,
             };
-
-
         }
     }
 
@@ -41,46 +39,31 @@ function getTimeArray(){
     return n.split(":");
 }
 
+//TODO: make true if any of the subconditions are correct
 function checkAllow(allowCond) {
     let time = new Date();
     if (allowCond.hasOwnProperty("monthDays")) {
-        if (!(allowCond.monthDays.includes(time.getDate()))) {
-            return false;
+        if (allowCond.monthDays.includes(time.getDate())) {
+            return true;
         }
     }
     if (allowCond.hasOwnProperty("weekDays")) {
         let passed = allowCond.weekDays.includes(time.getDay());
-        if (!passed) return false;
+        if (passed) return true;
     }
     if (allowCond.hasOwnProperty("timeRanges")) {
         let n = getTimeArray().slice(0,2).join("");
         let val = parseInt(n);
-        var inRange = false;
         for (var i = 0; i < allowCond.timeRanges.length; i++) {
             let rngLo = allowCond.timeRanges[i][0], rngHi = allowCond.timeRanges[i][1];
             if (val >= rngLo && val < rngHi) {
-                inRange = true;
-                break;
+                return true;
             }
         }
-        if (!inRange) {
-            return false;
-        }
     }
 
-    if (allowCond.hasOwnProperty("bimonthly") && allowCond.bimonthly) {
-        if (!(time.getDate().valueOf() === 1 && time.getMonth().valueOf() % 2 === 0)) {
-            return false;
-        }
-    }
-
-    //TODO:finish debugging me
-    return true;
+    return false;
 }
-
-var m_history={};
-
-var disableTil={};
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (!(tab.hasOwnProperty('url'))) {
@@ -100,17 +83,22 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         }
         console.log("response:",response);
 
-
         let result = blockResult(tab.url,rules);
         if(result.value===ALLOW){
             return;
         }
         result.destUrl=tab.url;
 
-
         if (result.value === BLOCK) {
-            //console.log("redirect to "+blockPage);
-            chrome.tabs.update(tabId, {url: blockPage});
+            chrome.tabs.update(tabId, {url: blockPage}, function (t) {
+                var listener = function (tabId, changeInfo, tab2) {
+                    if (tabId === t.id && tab2.status === 'complete') {
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        chrome.tabs.sendMessage(tabId, result);
+                    }
+                };
+                chrome.tabs.onUpdated.addListener(listener)
+            });
         } else if (result.value === WARN) {
             let exp = result.reason.exp;
             let curlim=localStorage.getItem(exp);
@@ -125,13 +113,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
                     }
                 };
                 chrome.tabs.onUpdated.addListener(listener);
-
-
             });
-
         }
-
-
     });
 });
 

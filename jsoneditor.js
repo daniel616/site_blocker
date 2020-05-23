@@ -1,39 +1,7 @@
-let barred = [
-    {
-        exp: "viz.com",
-        allowIf: [
-
-            {
-                timeRanges: [["11:30","13:00"], ["17:00","22:00"]],
-                weekDays:[1,2],
-            },
-            {
-                monthDays:[1,15]
-            }
-
-            ]
-    },
-    {
-        exp: "youtube.com",
-        warnOnly: true,
-        allowIf:[
-            {
-            monthDays:[1,2,5]
-            }]
-    },
-    {
-        exp: "fandom"
-    },
-    {
-        exp: "netflix",
-        allowIf: [
-            {
-                timeRanges: [["11:30","13:00"], ["17:00","22:00"]]
-            }]
-    }
-    ];
-
 var uniqNum=0;
+let TIME="T";
+let WEEKDAY="W";
+let MONTHDAY="M";
 
 function fetchUniqNum(){
     let num = uniqNum;
@@ -62,6 +30,7 @@ function makeButton(text,action){
 function removableSelector(options,name){
     let div = makeEl("div");
     let input=makeEl("select");
+    input['required'] = true;
     for (let idx in options){
         let day=options[idx];
         let option = makeEl("option");
@@ -88,10 +57,12 @@ function makeTimeRangeSelector(){
     hi['className']='hi';
     hi['name']='hiTime_'+num;
 
+    lo['required']=true;
+    hi['required']=true;
     let loLabel=makeEl('label');
-    loLabel.innerText='Min:';
+    loLabel.innerText='Min time:';
     let hiLabel=makeEl('label');
-    hiLabel.innerText='Max:';
+    hiLabel.innerText='Max time:';
 
     let remove=makeButton("-",()=>div.remove());
     div.append(loLabel,lo,hiLabel,hi,remove);
@@ -101,6 +72,7 @@ function makeTimeRangeSelector(){
 function makeWeekDaySelector(){
     let div = makeEl("div");
     let input=makeEl("select");
+    input['required'] = true;
     let values=[0,1,2,3,4,5,6];
     let options=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     for (var idx=0; idx<options.length;idx++){
@@ -131,9 +103,8 @@ function getMatchingClass(parent,classname){
             return parent.childNodes[j];
         }
     }
+    assert(false,"no matching class");
 }
-
-
 
 function getMatchingName(parent,classname){
     for (var j=0; j<parent.childNodes.length;j++){
@@ -141,28 +112,27 @@ function getMatchingName(parent,classname){
             return parent.childNodes[j];
         }
     }
+    assert(false,"no matching name")
 }
 
 function getDescendantInputs(parentID){
     let anSelector="#"+parentID;
     let inputs=$(anSelector+" input");
     let selects=$(anSelector+" select");
+    let all = $.merge(inputs,selects);
     var ret={};
-    for (var i =0; i<inputs.length; i++){
-        let inputHTML = inputs[i];
+    for (var i =0; i<all.length; i++){
+        let inputHTML = all[i];
+        if(inputHTML.hasOwnProperty("data-ignore")&&inputHTML["data-ignore"]){
+            continue;
+        }
         if(inputHTML["name"]==="warnOnly"){
             ret['warnOnly']=inputHTML.checked;
         }else{
             ret[inputHTML["name"]]=inputHTML["value"];
         }
     }
-
-    for (var j =0; j<selects.length; j++){
-        let selectHTML = selects[j];
-        ret[selectHTML["name"]]=selectHTML["value"];
-    }
     return ret;
-
 }
 
 function blankAllowDiv(){
@@ -173,17 +143,47 @@ function blankAllowDiv(){
     weekDiv.className='weekDiv';
     let monthDayDiv=makeEl('div');
     monthDayDiv.className='monthDayDiv';
-    let addTime=makeButton("Add allowed time range",()=>timeDiv.append(makeTimeRangeSelector()));
-    let addWeekDay=makeButton("Add allowed weekdays",()=>weekDiv.append(makeWeekDaySelector()));
-    let addMonthDay=makeButton("Add allowed days of month",()=>monthDayDiv.append(makeMonthDaySelector()));
 
-    allowIf.append(timeDiv,addTime,weekDiv,addWeekDay,monthDayDiv,addMonthDay);
-    console.log("add allowdiv");
+    let chooseAdd=makeEl("select");
+    chooseAdd['data-ignore']=true;
+    let labels=["Time of day","Day of week", "Day of month"];
+    let values=[TIME,WEEKDAY,MONTHDAY];
+    for(var i=0; i<labels.length;i++){
+        let option = makeEl("option");
+        option.innerText=labels[i];
+        option.setAttribute("value",values[i]);
+        chooseAdd.appendChild(option);
+    }
+
+    let addAllow=makeButton("+", function(){
+        switch(chooseAdd.value){
+            case TIME:
+                timeDiv.append(makeTimeRangeSelector());
+                break;
+            case WEEKDAY:
+                weekDiv.append(makeWeekDaySelector());
+                break;
+            case MONTHDAY:
+                monthDayDiv.append(makeMonthDaySelector());
+                break;
+            default:
+                alert('error');
+                break;
+        }
+    });
+    let id=fetchUniqNum().toString();
+    addAllow["id"]=id;
+    let descriptor = makeEl("label");
+    descriptor["innerText"]="Add permissions based on: ";
+    descriptor["for"]=id;
+
+
+    allowIf.append(timeDiv,weekDiv,monthDayDiv,descriptor,chooseAdd,addAllow);
     return allowIf;
 }
 
-function makeAllowDiv(allowRules){
-    let allowDiv=blankAllowDiv();
+
+function setAllowDiv(allowDiv, allowRules){
     let timeDiv=getMatchingClass(allowDiv,'timeDiv');
     let weekDiv=getMatchingClass(allowDiv,'weekDiv');
     let monthDayDiv=getMatchingClass(allowDiv,'monthDayDiv');
@@ -221,6 +221,10 @@ function makeAllowDiv(allowRules){
             monthDayDiv.append(selectDiv);
         }
     }
+}
+function makeAllowDiv(allowRules){
+    let allowDiv=blankAllowDiv();
+    setAllowDiv(allowDiv,allowRules);
     return allowDiv;
 }
 
@@ -229,8 +233,9 @@ function newEmptyRuleForm(){
     let exp_input= makeEl('input');
     exp_input.type='text';
     exp_input.name="exp";
+    exp_input['required'] = true;
     let expLabel=makeEl('label');
-    expLabel.innerText="Blocked expression:";
+    expLabel.innerText="Restricted expression:";
     let warnbox=makeEl('input');
     warnbox.type="checkbox";
     warnbox.name='warnOnly';
@@ -238,16 +243,13 @@ function newEmptyRuleForm(){
     boxLabel.innerText="warn only";
     //boxLabel.setAttribute("for","warn-in"+i);
 
-    let allowDiv=makeEl('div');
-    let tnode = document.createTextNode("Allow if all of the conditions below are met:");
-    allowDiv.append(tnode);
+    let allowDiv=blankAllowDiv();
+    let tnode = document.createTextNode("Allow if any of the conditions below are met:");
+    allowDiv.insertBefore(tnode,allowDiv.firstChild);
     allowDiv.className='allowDiv';
 
-    let addAllowBtn= makeButton("Add permissions",()=>{
-        allowDiv.append(blankAllowDiv());
-    });
-    addAllowBtn.type='button';
-    form.append(expLabel,exp_input,boxLabel,warnbox,allowDiv,addAllowBtn);
+
+    form.append(expLabel,exp_input,boxLabel,warnbox,allowDiv);
     return form;
 }
 
@@ -268,20 +270,22 @@ function JSONtoForm(json){
         }
         let allowDiv=getMatchingClass(form,'allowDiv');
         if (rule.hasOwnProperty('allowIf')){
-            let subAllowDiv=makeAllowDiv(rule.allowIf);
-            allowDiv.append(subAllowDiv);
-
+            setAllowDiv(allowDiv,rule['allowIf']);
         }
-        let removeBtn=makeButton("Remove this rule", ()=>listEl.remove());
+        let removeBtn=makeButton("Remove this restriction", ()=>listEl.remove());
         listEl.append(form,removeBtn);
         list.appendChild(listEl);
     }
-    let add = makeButton('Add rule',()=>{
+
+    let add = makeButton('Add restriction',()=>{
         let form = newEmptyRuleForm();
+        let listEl=makeEl('li');
+        let removeBtn=makeButton("Remove this restriction", ()=>listEl.remove());
         form.id=getFormID();
-        list.appendChild(form);
+        listEl.append(form,removeBtn);
+        list.appendChild(listEl);
     });
-    let save=makeButton('Save',saveForm), reset=makeButton('Reset',()=>loadStoredForm());
+    let save=makeButton('Save',saveForm), reset=makeButton('Reset to last save',()=>loadStoredForm());
     main_div.append(list,add,save,reset)
 }
 
@@ -324,6 +328,7 @@ function saveForm(){
 
         rules.push(nrule);
     }
+    debugger;
     chrome.storage.sync.set({rules:rules},function(result){
         if(chrome.runtime.lastError!==undefined) {
             alert(chrome.runtime.lastError);

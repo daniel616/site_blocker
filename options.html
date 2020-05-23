@@ -2,12 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Change restrictions</title>
+    <link rel="stylesheet" href="options.css">
 </head>
 
 <body>
+<h1>Change restrictions</h1>
+<p>Any hostnames containg a restricted expression may get blocked.
+For example, if I block "facebook","facebook.fakedomain",
+    "dfacebook.com" and "www.facebook.com" will also get
+blocked. So don't block something like "a". You can allow sites to be visited at multiple
+times of day, days of the week, or days of the month.</p>
+<p>It is recommended that you set up minimal restrictions by using "warn only" as opposed
+    to hard blocks or blocking things at certain times. This
+prevents you from feeling the urge to disable or modify the blocker
+    settings later on.</p>
+<p>Validation of settings has not been implemented yet. Make sure your inputs make sense.</p>
+
 <div id="main_div"></div>
 <script src="jquery-3.5.1.js"></script>
+<script type = "text/javascript" src="utils.js"></script>
 <script type = "text/javascript" src="jsoneditor.js"></script>
 
 </body>

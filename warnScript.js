@@ -1,5 +1,3 @@
-//alert('content srippt');
-console.log("domm:",document);
 console.log(chrome.runtime.onMessage);
 
 chrome.runtime.onMessage.addListener(
@@ -10,7 +8,6 @@ chrome.runtime.onMessage.addListener(
         document.getElementById("explanation").innerText=reason;
         document.getElementById("continue").onclick = function () {
             let duration=document.getElementById("duration").value;
-            debugger;
             chrome.runtime.sendMessage({
                 disableFor:duration,
                 restriction:request.reason.exp,
