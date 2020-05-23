@@ -1,1 +1,1 @@
-Modify restrictikons by going to extension options.
+Modify restrictions by going to extension options.
