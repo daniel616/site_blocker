@@ -1,1 +1,1 @@
-To customize time options, modify the fields in background.js
+Modify restrictikons by going to extension options.
