@@ -328,7 +328,7 @@ function saveForm(){
 
         rules.push(nrule);
     }
-    debugger;
+    //debugger;
     chrome.storage.sync.set({rules:rules},function(result){
         if(chrome.runtime.lastError!==undefined) {
             alert(chrome.runtime.lastError);
@@ -338,13 +338,12 @@ function saveForm(){
 
 function loadStoredForm(){
     chrome.storage.sync.get(['rules'],function(result) {
-        var form;
-        if(chrome.runtime.lastError===undefined){
-            form= result['rules'];
-            console.log("successful form retrieval:", form);
-        }else{
+        var form=result['rules'];
+        if(form===undefined){
             console.log("form retrieval fail:",chrome.runtime.lastError);
             form= [];
+        }else{
+            console.log("successful form retrieval:", form);
         }
         JSONtoForm(form);
     });
