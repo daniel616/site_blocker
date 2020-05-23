@@ -8,6 +8,7 @@ let BLOCK = 'B';
 let WARN  = 'W';
 
 function blockResult(url,barred) {
+    debugger;
     for (var i = 0; i < barred.length; i++) {
         let currRule = barred[i];
         let regexp = currRule.exp;
@@ -72,14 +73,12 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
     chrome.storage.sync.get(['rules'],function(response) {
         console.log('rules:',response);
-        var rules;
-        if(chrome.runtime.lastError===undefined){
-            rules= response['rules'];
-            console.log("successful form retrieval:", rules);
-        }else{
-
+        var rules=response['rules'];
+        if(rules===undefined){
             console.log("form retrieval fail:",chrome.runtime.lastError);
             rules= [];
+        }else{
+            console.log("successful form retrieval:", rules);
         }
         console.log("response:",response);
 
