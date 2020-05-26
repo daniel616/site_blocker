@@ -1,3 +1,7 @@
 p {
     font-size:large;
 }
+
+.inline{
+    display: inline;
+}

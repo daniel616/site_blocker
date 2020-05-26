@@ -8,12 +8,9 @@ let BLOCK = 'B';
 let WARN  = 'W';
 
 function blockResult(url,barred) {
-    debugger;
     for (var i = 0; i < barred.length; i++) {
         let currRule = barred[i];
-        let regexp = currRule.exp;
-        var pos = url.search(new RegExp(regexp, 'ig'));
-        if (5 < pos) {
+        if (url.includes(currRule.exp)) {
             if (currRule.hasOwnProperty("allowIf")
                 && checkAllow(currRule.allowIf)) {
                 continue;
@@ -22,6 +19,8 @@ function blockResult(url,barred) {
             if (currRule.hasOwnProperty("warnOnly") && currRule.warnOnly) {
                 value = WARN;
             }
+            console.log("URL ",url," restricted because of rule ", currRule);
+
             return {
                 value: value,
                 reason: currRule,
@@ -82,11 +81,17 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         }
         console.log("response:",response);
 
-        let result = blockResult(tab.url,rules);
+        let url = new URL(tab.url);
+        if(!(url.protocol.includes("http"))) return;
+        let domain = url.hostname;
+
+        let result = blockResult(domain,rules);
+        console.log("Domain:",domain,"Result:",result);
+
         if(result.value===ALLOW){
             return;
         }
-        result.destUrl=tab.url;
+        result.origURL=domain;
 
         if (result.value === BLOCK) {
             chrome.tabs.update(tabId, {url: blockPage}, function (t) {

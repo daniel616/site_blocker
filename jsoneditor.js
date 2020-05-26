@@ -1,48 +1,35 @@
-var uniqNum=0;
 let TIME="T";
 let WEEKDAY="W";
 let MONTHDAY="M";
 
-function fetchUniqNum(){
-    let num = uniqNum;
-    uniqNum+=1;
-    return num;
+function timeToArray(tString){
+    let tmp=tString.split(":");
+    return [parseInt(tmp[0]),parseInt(tmp[1])];
+}
+function firstTimeLater(first,second){
+    let farr=timeToArray(first);
+    let sarr=timeToArray(second);
+    if(farr[0]>sarr[0]) return true;
+    if(farr[0]<sarr[0]) return false;
+    return farr[1]>sarr[1];
 }
 
-function getFormID(){
-    let num = uniqNum;
-    uniqNum+=1;
-    return "form"+num.toString();
-}
-
-function makeEl(st){
-    return document.createElement(st);
-}
-
-function makeButton(text,action){
-    let button=makeEl('button');
-    button.innerText=text;
-    button.onclick=action;
-    button.type='button';
-    return button;
-}
-
-function removableSelector(options,name){
-    let div = makeEl("div");
-    let input=makeEl("select");
-    input['required'] = true;
-    for (let idx in options){
-        let day=options[idx];
-        let option = makeEl("option");
-        option.innerText=day;
-        option.setAttribute("value",day);
-        input.appendChild(option);
+function validateTime(){
+    let name = this.name;
+    var hi,lo;
+    var num=name.split("_")[1];
+    if(name.includes('lo')){
+        lo=this;
+        hi=getMatchingName(this.parentNode,"hiTime_"+num);
+    }else{
+        hi=this;
+        lo=getMatchingName(this.parentNode,"loTime_"+num);
     }
-    let remove=makeButton("-",()=>div.remove());
-    div.append(input,remove);
-    input.setAttribute('class','selection');
-    input.name=name;
-    return div;
+    if(!firstTimeLater(hi.value,lo.value)){
+        lo.setCustomValidity("Invalid time range");
+    }else{
+        lo.setCustomValidity("");
+    }
 }
 
 function makeTimeRangeSelector(){
@@ -63,6 +50,9 @@ function makeTimeRangeSelector(){
     loLabel.innerText='Min time:';
     let hiLabel=makeEl('label');
     hiLabel.innerText='Max time:';
+
+    hi.oninput=validateTime;
+    lo.oninput=validateTime;
 
     let remove=makeButton("-",()=>div.remove());
     div.append(loLabel,lo,hiLabel,hi,remove);
@@ -97,43 +87,6 @@ function makeMonthDaySelector(){
     return removableSelector(options,id);
 }
 
-function getMatchingClass(parent,classname){
-    for (var j=0; j<parent.childNodes.length;j++){
-        if(parent.childNodes[j].className===classname){
-            return parent.childNodes[j];
-        }
-    }
-    assert(false,"no matching class");
-}
-
-function getMatchingName(parent,classname){
-    for (var j=0; j<parent.childNodes.length;j++){
-        if(parent.childNodes[j].name===classname){
-            return parent.childNodes[j];
-        }
-    }
-    assert(false,"no matching name")
-}
-
-function getDescendantInputs(parentID){
-    let anSelector="#"+parentID;
-    let inputs=$(anSelector+" input");
-    let selects=$(anSelector+" select");
-    let all = $.merge(inputs,selects);
-    var ret={};
-    for (var i =0; i<all.length; i++){
-        let inputHTML = all[i];
-        if(inputHTML.hasOwnProperty("data-ignore")&&inputHTML["data-ignore"]){
-            continue;
-        }
-        if(inputHTML["name"]==="warnOnly"){
-            ret['warnOnly']=inputHTML.checked;
-        }else{
-            ret[inputHTML["name"]]=inputHTML["value"];
-        }
-    }
-    return ret;
-}
 
 function blankAllowDiv(){
     let allowIf=makeEl('div');
@@ -196,6 +149,7 @@ function setAllowDiv(allowDiv, allowRules){
             let timeSelector=makeTimeRangeSelector();
             let lohtml=getMatchingClass(timeSelector,'lo');
             let hihtml=getMatchingClass(timeSelector,'hi');
+            //lohtml.setCustomValidity('wer');
             lohtml.value=lo;
             hihtml.value=hi;
             timeDiv.append(timeSelector);
@@ -222,14 +176,11 @@ function setAllowDiv(allowDiv, allowRules){
         }
     }
 }
-function makeAllowDiv(allowRules){
-    let allowDiv=blankAllowDiv();
-    setAllowDiv(allowDiv,allowRules);
-    return allowDiv;
-}
 
 function newEmptyRuleForm(){
-    let form = makeEl('form');
+    let form = makeEl('div');
+
+    form.setAttribute('data-isrule','sasdf');
     let exp_input= makeEl('input');
     exp_input.type='text';
     exp_input.name="exp";
@@ -248,13 +199,12 @@ function newEmptyRuleForm(){
     allowDiv.insertBefore(tnode,allowDiv.firstChild);
     allowDiv.className='allowDiv';
 
-
     form.append(expLabel,exp_input,boxLabel,warnbox,allowDiv);
     return form;
 }
 
 function JSONtoForm(json){
-    let main_div=$("#main_div")[0];
+    let main_div=$("#main_form")[0];
     main_div.innerHTML='';
     let list=makeEl('ul');
     for (var i =0; i<json.length; i++){
@@ -285,12 +235,16 @@ function JSONtoForm(json){
         listEl.append(form,removeBtn);
         list.appendChild(listEl);
     });
-    let save=makeButton('Save',saveForm), reset=makeButton('Reset to last save',()=>loadStoredForm());
-    main_div.append(list,add,save,reset)
+    let save=makeButton('Save',()=>{}), reset=makeButton('Reset to last save',()=>loadStoredForm());
+    main_div.onsubmit=saveForm;
+    save.type='submit';
+    save.formMethod='dialog';
+    main_div.append(list,save,add,reset)
 }
 
+
 function saveForm(){
-    let form = $('form');
+    let form = $('[data-isrule]');
     var rules = [];
     for (var i =0; i<form.length; i++){
         let values = getDescendantInputs(form[i].id);
@@ -315,9 +269,9 @@ function saveForm(){
                 let idx_s=key.split("_")[1];
                 let idx = parseInt(idx_s);
                 if (!(idx in tmp_times)){
-                    tmp_times[idx]=[0,0];
+                    tmp_times[idx]=[undefined,undefined];
                 }
-                let isLo=(key.substring(0,2)==='lo');
+                let isLo=(key.includes('lo'));
                 let which_idx=isLo? 0 : 1;
                 tmp_times[idx][which_idx]=value;
             }
