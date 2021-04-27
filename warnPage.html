@@ -17,13 +17,13 @@ this app, type this message exactly into the form below:</p>
 
 <p id="messageText"></p>
 
-<form >
+<form id="allowForm" autocomplete="off">
 <label>Copied message:
 
 <!--
 <textarea id="confirmTxt" onpaste="return false;" onchange="alert(1)">
 </textarea> -->
-<input id="confirmTxt" size=150>
+<input id="confirmTxt" size=150 required>
 </label>
 <div>
 <label>Disable restriction for
@@ -35,7 +35,7 @@ this app, type this message exactly into the form below:</p>
         <option value="120">120 minutes</option>
     </select>
 </label>
-<button id="continue">Go</button>
+<input type="submit" value="Go">
 </div>
 </form>
 

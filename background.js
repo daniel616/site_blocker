@@ -19,7 +19,7 @@ function blockResult(url,barred) {
             if (currRule.hasOwnProperty("warnOnly") && currRule.warnOnly) {
                 value = WARN;
             }
-            console.log("URL ",url," restricted because of rule ", currRule);
+            console.log("URL ",url," is restricted because of rule ", currRule);
 
             return {
                 value: value,
@@ -88,10 +88,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         let result = blockResult(domain,rules);
         console.log("Domain:",domain,"Result:",result);
 
-        if(result.value===ALLOW){
-            return;
-        }
-        result.origURL=domain;
+        result.origURL=url;
 
         if (result.value === BLOCK) {
             chrome.tabs.update(tabId, {url: blockPage}, function (t) {
@@ -129,12 +126,14 @@ function epochMins(){
 
 chrome.runtime.onMessage.addListener(
     function(request,sender,sendResponse) {
+        console.log(request,sender,sendResponse);
         let exp = request.restriction;
         let duration= parseInt(request.disableFor);
         let redirect= request.redirect;
         let t = new Date().getTime();
         let curmin=t/(60*1000);
         localStorage.setItem(exp,curmin+duration);
+        console.log(redirect,sender.tab.id,"hi");
         //disableTil[exp]=curmin+duration;
         chrome.tabs.update(sender.tab.id, {url: redirect});
         //sender.tab

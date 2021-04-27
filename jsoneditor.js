@@ -286,7 +286,10 @@ function saveForm(){
     chrome.storage.sync.set({rules:rules},function(result){
         if(chrome.runtime.lastError!==undefined) {
             alert(chrome.runtime.lastError);
+        }else{
+            alert("The form was saved.");
         }
+
     });
 }
 

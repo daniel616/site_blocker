@@ -21,24 +21,29 @@ msgTxt.innerText=stringToMatch;
 let confirmTxt=document.getElementById("confirmTxt");
 
 confirmTxt.setAttribute("pattern", stringToMatch);
-confirmTxt.setAttribute("onpaste", "return true;")
+confirmTxt.onpaste= function() { return false};
+//confirmTxt.setAttribute("onpaste", "return true;")
+
 
 
 chrome.runtime.onMessage.addListener(
     function(request,sender,sendResponse){
         console.log("message:",request);
         var reason = JSON.stringify(request.reason);
-        let origURL=request.origURL;
-        document.getElementById("site").innerText=origURL;
+        document.getElementById("site").innerText=request.origURL;
 
         document.getElementById("explanation").innerText=reason;
-        document.getElementById("continue").onclick = function () {
+        document.getElementById("allowForm").onsubmit = function () {
+
             let duration=document.getElementById("duration").value;
+            console.log("redirect:", request.origUrl, request.destUrl);
             chrome.runtime.sendMessage({
                 disableFor:duration,
                 restriction:request.reason.exp,
-                redirect:request.destUrl});
-            location.href = request.destUrl;
+                redirect:request.origURL});
+            //location.href = request.destUrl;
+            console.log("sent message");
+            return false;
         };
 
     }
