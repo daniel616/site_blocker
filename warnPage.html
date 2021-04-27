@@ -12,9 +12,22 @@
 <p id = "explanation"></p>
 <p>The page you are visiting is sometimes useful, but you restricted it
     because you often use it for non-productive purposes. Proceed only
-if you have good intentions.</p>
+if you have good intentions. If you genuinely have a good reason to use 
+this app, type this message exactly into the form below:</p>
 
+<p id="messageText"></p>
+
+<form >
+<label>Copied message:
+
+<!--
+<textarea id="confirmTxt" onpaste="return false;" onchange="alert(1)">
+</textarea> -->
+<input id="confirmTxt" size=150>
+</label>
+<div>
 <label>Disable restriction for
+    
     <select name="time" id="duration">
         <option value="5">5 minutes</option>
         <option value="15">15 minutes</option>
@@ -23,11 +36,14 @@ if you have good intentions.</p>
     </select>
 </label>
 <button id="continue">Go</button>
+</div>
+</form>
 
 
 
 
 </body>
+
 
 <script type = "text/javascript" src="warnScript.js"></script>
 </html>
