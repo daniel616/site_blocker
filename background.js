@@ -39,6 +39,11 @@ function getTimeArray(){
     return n.split(":");
 }
 
+function timeToInt(t){
+    let x=t.split(":")[0];
+    let y = t.split(":")[1];
+    return parseInt(x)*100+parseInt(y);
+}
 //TODO: make true if any of the subconditions are correct
 function checkAllow(allowCond) {
     let time = new Date();
@@ -55,7 +60,8 @@ function checkAllow(allowCond) {
         let n = getTimeArray().slice(0,2).join("");
         let val = parseInt(n);
         for (var i = 0; i < allowCond.timeRanges.length; i++) {
-            let rngLo = allowCond.timeRanges[i][0], rngHi = allowCond.timeRanges[i][1];
+            let rngLo = timeToInt(allowCond.timeRanges[i][0]), rngHi = timeToInt(allowCond.timeRanges[i][1]);
+            console.log("val lo hi", val, rngLo, rngHi);
             if (val >= rngLo && val < rngHi) {
                 return true;
             }
