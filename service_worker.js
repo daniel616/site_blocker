@@ -1,7 +1,7 @@
 'use strict';
 
-let blockPage = chrome.extension.getURL('blocked.html');
-let warnPage = chrome.extension.getURL('warnPage.html');
+let blockPage = chrome.runtime.getURL('blocked.html');
+let warnPage = chrome.runtime.getURL('warnPage.html');
 
 let ALLOW = 'A';
 let BLOCK = 'B';
@@ -108,7 +108,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             });
         } else if (result.value === WARN) {
             let exp = result.reason.exp;
-            let curlim=localStorage.getItem(exp);
+            let curlim=chrome.storage.local.getItem(exp);
             if(curlim!==null&&epochMins()<=curlim){
                 return;
             }
@@ -138,7 +138,7 @@ chrome.runtime.onMessage.addListener(
         let redirect= request.redirect;
         let t = new Date().getTime();
         let curmin=t/(60*1000);
-        localStorage.setItem(exp,curmin+duration);
+        chrome.storage.local.setItem(exp,curmin+duration);
         console.log(redirect,sender.tab.id,"hi");
         //disableTil[exp]=curmin+duration;
         chrome.tabs.update(sender.tab.id, {url: redirect});
