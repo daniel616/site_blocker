@@ -36,12 +36,11 @@ chrome.runtime.onMessage.addListener(
         document.getElementById("allowForm").onsubmit = function () {
 
             let duration=document.getElementById("duration").value;
-            console.log("redirect:", request.origUrl, request.destUrl);
+            console.log("redirect:", request.origURL);
             chrome.runtime.sendMessage({
                 disableFor:duration,
                 restriction:request.reason.exp,
                 redirect:request.origURL});
-            //location.href = request.destUrl;
             console.log("sent message");
             return false;
         };

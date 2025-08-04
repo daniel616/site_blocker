@@ -10,14 +10,14 @@
    "manifest_version": 3,
    "name": "flexible blocker",
    "options_page": "options.html",
-   "permissions": [ "storage", "tabs" ],
+   "permissions": [ "storage", "tabs"],
    "update_url": "https://clients2.google.com/service/update2/crx",
    "version": "2.0",
    "action": {
     "default_icon": { 
       "48": "images/dog.png"  
     },
-    "default_title": "Click Me"   // optional, shown in tooltip
-    //"default_popup": "popup.html"  // optional
+    "default_title": "flexible blocker",  // optional, shown in tooltip
+    "default_popup": "popup.html"  // optional
   }
 }

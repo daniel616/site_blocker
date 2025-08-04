@@ -15,14 +15,14 @@ function blockResult(url,barred) {
                 && checkAllow(currRule.allowIf)) {
                 continue;
             }
-            var value = BLOCK;
+            var blockStatus = BLOCK;
             if (currRule.hasOwnProperty("warnOnly") && currRule.warnOnly) {
-                value = WARN;
+                blockStatus = WARN;
             }
             console.log("URL ",url," is restricted because of rule ", currRule);
 
             return {
-                value: value,
+                value: blockStatus,
                 reason: currRule,
             };
         }
@@ -108,18 +108,23 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
             });
         } else if (result.value === WARN) {
             let exp = result.reason.exp;
-            let curlim=chrome.storage.local.getItem(exp);
-            if(curlim!==null&&epochMins()<=curlim){
-                return;
-            }
-            chrome.tabs.update(tabId, {url: warnPage}, function (t) {
-                var listener = function (tabId, changeInfo, tab2) {
-                    if (tabId === t.id && tab2.status === 'complete') {
-                        chrome.tabs.onUpdated.removeListener(listener);
-                        chrome.tabs.sendMessage(tabId, result);
-                    }
-                };
-                chrome.tabs.onUpdated.addListener(listener);
+            //obj={};
+            //obj[e]
+            //let curlim=chrome.storage.local.getItem(exp);
+            chrome.storage.local.get([exp]).then((promiseResponse) => {
+                let curlim=promiseResponse[exp];
+                if(curlim!==undefined&&epochMins()<=curlim){
+                    return;
+                }
+                chrome.tabs.update(tabId, {url: warnPage}, function (t) {
+                    var listener = function (tabId, changeInfo, tab2) {
+                        if (tabId === t.id && tab2.status === 'complete') {
+                            chrome.tabs.onUpdated.removeListener(listener);
+                            chrome.tabs.sendMessage(tabId, result);
+                        }
+                    };
+                    chrome.tabs.onUpdated.addListener(listener);
+                });
             });
         }
     });
@@ -138,10 +143,16 @@ chrome.runtime.onMessage.addListener(
         let redirect= request.redirect;
         let t = new Date().getTime();
         let curmin=t/(60*1000);
+        let obj={};
+        obj[exp]=curmin+duration;
+        chrome.storage.local.set(obj).then(() => {
+            console.log(redirect,sender.tab.id,"hi");
+            chrome.tabs.update(sender.tab.id, {url: redirect});
+        });
+        /*
         chrome.storage.local.setItem(exp,curmin+duration);
         console.log(redirect,sender.tab.id,"hi");
-        //disableTil[exp]=curmin+duration;
-        chrome.tabs.update(sender.tab.id, {url: redirect});
+        chrome.tabs.update(sender.tab.id, {url: redirect});*/
         //sender.tab
 
     }

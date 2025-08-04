@@ -1,9 +1,7 @@
 var uniqNum=0;
 
 function fetchUniqNum(){
-    let num = uniqNum;
-    uniqNum+=1;
-    return num;
+    return uniqNum++;
 }
 
 function getFormID(){
