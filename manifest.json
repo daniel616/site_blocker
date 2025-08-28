@@ -17,7 +17,6 @@
     "default_icon": { 
       "48": "images/dog.png"  
     },
-    "default_title": "flexible blocker",  // optional, shown in tooltip
-    "default_popup": "popup.html"  // optional
-  }
+    "default_popup": "popup.html"
+   }
 }
