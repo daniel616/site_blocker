@@ -1,19 +1,20 @@
+/*let replacementChars = "!@#$%^&*()+=1234567890"
 
-
-let confirmString="I have taken time to think about what I am doing, and won't regret this later on";
 
 function randomizeString(st) {
     let sArray=Array.from(st);
-    for (var i=0; i<3; i++){
+    for (var i=0; i<10; i++){
         let idx=Math.floor(Math.random()*st.length);
-        let digit= Math.floor(Math.random()*10);
-        sArray[idx]=digit;
+        let replaceIndex= Math.floor(Math.random()*replacementChars.length);
+        sArray[idx]=replacementChars[replaceIndex];
     }
     return sArray.join('');
 }
+*/
 
+let confirmString="I have taken time to think about what I am doing, and won't regret this later on.";
 
-let stringToMatch=randomizeString(confirmString);
+let stringToMatch=confirmString+window.crypto.randomUUID();//randomizeString(confirmString);
 
 var msgTxt = document.getElementById("messageText");
 msgTxt.innerText=stringToMatch;
