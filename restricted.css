@@ -1,7 +1,108 @@
-p {
-    font-size:large;
+/* Styles for blocked.html and warnPage.html */
+body { background: var(--bg); }
+
+.page { max-width: 720px; }
+
+/* Field pairs: a small caps label above its value */
+.field { margin-bottom: var(--space-4); }
+
+.field-label {
+    display: block;
+    margin-bottom: var(--space-1);
+    color: var(--text-muted);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
 }
 
-.inline{
-    display: inline;
+.site {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--red-050);
+    border: 1px solid var(--red-100);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+    color: var(--red-900);
+    font-family: var(--font-mono);
+    font-size: .95rem;
+    word-break: break-all;
+}
+
+.rule {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--gray-050);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: .875rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+}
+
+.hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: .95rem;
+}
+
+.hint + .hint { margin-top: var(--space-3); }
+
+/* ------------------------------------------------ warn page override form */
+
+.override {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+}
+
+.phrase {
+    margin: 0 0 var(--space-4);
+    padding: var(--space-4);
+    background: var(--red-050);
+    border: 1px dashed var(--red-500);
+    border-radius: var(--radius);
+    color: var(--red-900);
+    font-family: var(--font-mono);
+    font-size: .9rem;
+    line-height: 1.6;
+    word-break: break-word;
+    user-select: none;
+}
+
+#allowForm .field-label { margin-bottom: var(--space-2); }
+
+#confirmTxt {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    font-family: var(--font-mono);
+    font-size: .9rem;
+}
+
+.override-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.override-actions label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: .95rem;
+}
+
+.override-actions input[type="submit"] { margin-left: auto; }
+
+@media (max-width: 560px) {
+    .page { padding: var(--space-4) var(--space-3) var(--space-6); }
+    .override-actions input[type="submit"] { margin-left: 0; width: 100%; }
 }

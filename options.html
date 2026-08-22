@@ -2,26 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Change restrictions</title>
+    <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="options.css">
 </head>
 
 <body>
-<h1>Change restrictions</h1>
-<p>Any domains containing a restricted expression may get blocked.
-For example, if I block "facebook","facebook.fakedomain",
-    "dfacebook.com" and "www.facebook.com" will also get
-blocked. So don't block something like "a". You can allow sites to be visited at multiple
-times of day, days of the week, or days of the month.</p>
-<p>It is recommended that you set up minimal restrictions by only blocking things at certain times or
-    using "warn only" as opposed to hard blocks. This prevents you from feeling the urge to disable the blocker or
-    modify the blocker settings later on.</p>
+<main class="page">
+    <div class="card flush">
+        <div class="banner">
+            <span class="badge">flexible blocker</span>
+            <h1>Change restrictions</h1>
+            <p>Choose what gets blocked, and when it is allowed through.</p>
+        </div>
+        <div class="card-body">
+            <p class="intro">Any domain containing a restricted expression may get blocked. For example, if you
+                block <code>facebook</code>, then <code>facebook.fakedomain</code>, <code>dfacebook.com</code> and
+                <code>www.facebook.com</code> are all blocked too &mdash; so don't block something like
+                <code>a</code>. You can allow sites to be visited at certain times of day, days of the week, or
+                days of the month.</p>
+            <p class="tip">It is recommended that you set up minimal restrictions, blocking things only at certain
+                times or using <strong>warn only</strong> instead of hard blocks. This prevents you from feeling the
+                urge to disable the blocker or modify its settings later on.</p>
+        </div>
+    </div>
 
-<form id="main_form"></form>
-<p id="msg"></p>
+    <form id="main_form"></form>
+    <p id="msg"></p>
+</main>
+
 <script src="jquery-3.5.1.js"></script>
-<script type = "text/javascript" src="utils.js"></script>
-<script type = "text/javascript" src="jsoneditor.js"></script>
+<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="jsoneditor.js"></script>
 
 </body>
 </html>

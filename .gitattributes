@@ -1,0 +1,19 @@
+# Handle text files automatically and normalize them to LF in the Git history
+* text=auto
+
+# Explicitly declare files that must always maintain LF line endings
+# (Essential for scripts that will execute inside Linux environments/Docker)
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Explicitly declare files that must always maintain CRLF line endings
+# (Essential for Windows batch scripts or Visual Studio files)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sln text eol=crlf
+
+# Denote binary files so Git avoids touching their line endings entirely
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

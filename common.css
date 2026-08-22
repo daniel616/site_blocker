@@ -1,0 +1,260 @@
+/* ==========================================================================
+   flexible blocker — shared design system
+   Red & white color scheme, used by every page in the extension.
+   ========================================================================== */
+
+:root {
+    /* Brand reds */
+    --red-900: #5c0d14;
+    --red-800: #8a1220;
+    --red-700: #a8121f;
+    --red-600: #c8102e;
+    --red-500: #e02436;
+    --red-100: #fde8ea;
+    --red-050: #fff5f6;
+
+    /* Neutrals */
+    --white: #ffffff;
+    --gray-050: #fafafa;
+    --gray-100: #f2f2f3;
+    --gray-200: #e4e5e7;
+    --gray-400: #a5a8ad;
+    --gray-600: #5f636b;
+    --gray-800: #2b2e34;
+
+    /* Semantic tokens */
+    --bg: var(--gray-100);
+    --surface: var(--white);
+    --border: var(--gray-200);
+    --text: var(--gray-800);
+    --text-muted: var(--gray-600);
+    --accent: var(--red-600);
+    --accent-strong: var(--red-800);
+
+    /* Shape & depth */
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px rgba(28, 8, 11, .08);
+    --shadow: 0 2px 8px rgba(28, 8, 11, .10);
+    --shadow-lg: 0 10px 32px rgba(28, 8, 11, .14);
+
+    /* Rhythm */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+
+    --font: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------- typography */
+
+h1, h2, h3 {
+    margin: 0 0 var(--space-3);
+    color: var(--red-900);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+
+p { margin: 0 0 var(--space-4); }
+p:last-child { margin-bottom: 0; }
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200, 16, 46, .35);
+    transition: color .15s ease, border-color .15s ease;
+}
+
+a:hover,
+a:focus-visible { color: var(--accent-strong); border-bottom-color: var(--accent-strong); }
+
+strong { font-weight: 600; color: var(--red-800); }
+
+/* ------------------------------------------------------------------- layout */
+
+.page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-5) var(--space-7);
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: var(--space-5);
+}
+
+.card + .card { margin-top: var(--space-4); }
+
+/* Accent bar shared by page headers */
+.banner {
+    background: linear-gradient(135deg, var(--red-700), var(--red-600));
+    color: var(--white);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--space-5);
+}
+
+.banner h1,
+.banner h2 { color: var(--white); margin-bottom: var(--space-1); }
+
+.banner p { color: rgba(255, 255, 255, .88); margin: 0; }
+
+/* --------------------------------------------------------------- form parts */
+
+label { color: var(--text); font-size: .95rem; }
+
+input[type="text"],
+input[type="time"],
+input[type="search"],
+select,
+textarea {
+    font-family: inherit;
+    font-size: .95rem;
+    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--gray-400);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px;
+    max-width: 100%;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+input[type="text"]:hover,
+input[type="time"]:hover,
+select:hover,
+textarea:hover { border-color: var(--red-500); }
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, .22);
+}
+
+/* Only flag fields the user has actually interacted with. */
+input:user-invalid,
+select:user-invalid { border-color: var(--red-600); }
+
+input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    vertical-align: -2px;
+    margin: 0 var(--space-1) 0 0;
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+button,
+input[type="submit"] {
+    font-family: inherit;
+    font-size: .95rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--accent);
+    background: var(--white);
+    border: 1px solid var(--red-500);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease,
+                border-color .15s ease, box-shadow .15s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background: var(--red-050);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-sm);
+}
+
+button:active,
+input[type="submit"]:active { background: var(--red-100); }
+
+/* Filled variant for primary actions */
+button.primary,
+input[type="submit"] {
+    color: var(--white);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+button.primary:hover,
+input[type="submit"]:hover {
+    color: var(--white);
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+}
+
+button.primary:active,
+input[type="submit"]:active { background: var(--red-900); }
+
+/* Disabled controls */
+input:disabled,
+select:disabled,
+button:disabled,
+input[type="submit"]:disabled {
+    color: var(--gray-600);
+    background: var(--gray-100);
+    border-color: var(--border);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
+}
+
+/* --------------------------------------------- card with a flush-top banner */
+
+.card.flush { padding: 0; overflow: hidden; }
+
+.card-body { padding: var(--space-5); }
+
+/* Small uppercase status chip, usually placed inside a banner */
+.badge {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .18);
+    border: 1px solid rgba(255, 255, 255, .45);
+    color: var(--white);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}

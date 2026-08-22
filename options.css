@@ -1,10 +1,198 @@
-li {
-    margin-top: 50px;
-    margin-bottom: 50px;
+/* Styles for options.html — the rule editor built by jsoneditor.js */
+
+.page { max-width: 900px; }
+
+.intro { color: var(--text-muted); }
+
+.intro code {
+    padding: 1px 5px;
+    background: var(--red-050);
+    border: 1px solid var(--red-100);
+    border-radius: var(--radius-sm);
+    color: var(--red-800);
+    font-family: var(--font-mono);
+    font-size: .85em;
 }
 
+.tip {
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--red-050);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--red-900);
+    font-size: .95rem;
+}
 
+/* ------------------------------------------------------------- rule list */
 
-p, div {
-    font-size: large;
+#main_form { margin-top: var(--space-4); }
+
+#main_form ul {
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+}
+
+#main_form li {
+    position: relative;
+    margin: 0 0 var(--space-4);
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+#main_form li:hover { box-shadow: var(--shadow); }
+
+/* Rule header: expression field + "warn only" toggle */
+[data-isrule] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+}
+
+[data-isrule] > label {
+    font-weight: 600;
+    color: var(--red-800);
+}
+
+[data-isrule] > input[name="exp"] {
+    flex: 1 1 240px;
+    min-width: 0;
+    font-family: var(--font-mono);
+}
+
+/* The "warn only" label sits right before its checkbox */
+[data-isrule] > label:nth-of-type(2) {
+    margin-left: auto;
+    order: 2;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+[data-isrule] > input[name="warnOnly"] { order: 3; }
+
+/* -------------------------------------------------------- allow conditions */
+
+.allowDiv {
+    order: 4;
+    flex: 1 0 100%;
+    margin-top: var(--space-3);
+    padding: var(--space-4);
+    background: var(--gray-050);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+}
+
+/* Condition groups, in DOM order: time / weekday / month day */
+.allowDiv > .timeDiv:not(:empty),
+.allowDiv > .weekDiv:not(:empty),
+.allowDiv > .monthDayDiv:not(:empty) { margin: var(--space-3) 0; }
+
+.allowDiv > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-weight: 400;
+}
+
+/* The weekday / month-day rows carry no label of their own, so name them here */
+.weekDiv > div::before,
+.monthDayDiv > div::before {
+    color: var(--text-muted);
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.weekDiv > div::before { content: "Day of week:"; }
+
+.monthDayDiv > div::before { content: "Day of month:"; }
+
+.allowDiv > div > div label {
+    color: var(--text-muted);
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+/* Small "-" remove button on each condition row */
+.allowDiv > div > div button {
+    margin-left: auto;
+    min-width: 30px;
+    padding: 3px 9px;
+    font-size: 1rem;
+    line-height: 1.1;
+}
+
+/* Trailing "Add permissions based on:" control row */
+.allowDiv > label {
+    display: inline-block;
+    margin: var(--space-2) var(--space-2) 0 0;
+    font-weight: 600;
+}
+
+.allowDiv > select { margin-right: var(--space-2); }
+
+.allowDiv > button {
+    min-width: 34px;
+    padding: 6px 12px;
+    font-size: 1rem;
+}
+
+/* ------------------------------------------------------------ list actions */
+
+/* "Remove this restriction" — the button that is a direct child of an <li> */
+#main_form li > button {
+    margin-top: var(--space-4);
+    color: var(--text-muted);
+    border-color: var(--border);
+    font-weight: 500;
+}
+
+#main_form li > button:hover {
+    color: var(--accent);
+    background: var(--red-050);
+    border-color: var(--red-500);
+}
+
+/* Save / Add restriction / Reset row at the end of the form */
+#main_form > button {
+    margin: 0 var(--space-2) var(--space-2) 0;
+}
+
+#main_form > button[type="submit"] {
+    color: var(--white);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+#main_form > button[type="submit"]:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+}
+
+#msg { color: var(--text-muted); }
+
+@media (max-width: 640px) {
+    .page { padding: var(--space-4) var(--space-3) var(--space-6); }
+    #main_form li { padding: var(--space-4); }
+    [data-isrule] > label:nth-of-type(2) { margin-left: 0; }
 }

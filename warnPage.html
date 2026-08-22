@@ -2,52 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Warning</title>
+    <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="restricted.css">
 </head>
 <body>
-<p class="inline">The site </p>
-<p class="inline" id="site"></p>
-<p class="inline">was flagged because of the following rule:</p>
-<p id = "explanation"></p>
-<p>The page you are visiting is sometimes useful, but you restricted it 
-    because you often use it for non-productive purposes. If you genuinely have a good reason to use 
-this website, type the following message exactly into the form below and specify the duration for which you will need the site. Note that copy-paste 
-is prevented here.</p>
 
-<p id="messageText"></p>
+<main class="page">
+    <div class="card flush">
+        <div class="banner">
+            <span class="badge">Flagged</span>
+            <h1>This site was flagged</h1>
+            <p>You can continue, but only deliberately.</p>
+        </div>
+        <div class="card-body">
+            <div class="field">
+                <span class="field-label">Requested site</span>
+                <p class="site" id="site"></p>
+            </div>
+            <div class="field">
+                <span class="field-label">Matching rule</span>
+                <pre class="rule" id="explanation"></pre>
+            </div>
+            <p class="hint">The page you are visiting is sometimes useful, but you restricted it because you
+                often use it for non-productive purposes. If you genuinely have a good reason to use this
+                website, type the message below exactly into the form and choose how long you need it.</p>
+            <p class="hint">Copy and paste is deliberately disabled here.</p>
 
-<form id="allowForm" autocomplete="off">
-<label>Copied message:
+            <section class="override">
+                <span class="field-label" id="messageLabel">Type this message exactly</span>
+                <p class="phrase" id="messageText"></p>
 
-<!--
-<textarea id="confirmTxt" onpaste="return false;" onchange="alert(1)">
-</textarea> -->
-<input id="confirmTxt" size=150 required>
-</label>
-<div>
-<label>Disable restriction for
-    
-    <select name="time" id="duration">
-        <option value="1">1 minute</option>
-        <option value="2">2 minutes</option>
-        <option value="3">3 minutes</option>
-        <option value="4">4 minutes</option>
-        <option value="5">5 minutes</option>
-        <option value="15">15 minutes</option>
-        <option value="30">30 minutes</option>
-        <option value="120">120 minutes</option>
-    </select>
-</label>
-<input type="submit" value="Go">
-</div>
-</form>
+                <form id="allowForm" autocomplete="off">
+                    <label class="field-label" for="confirmTxt">Copied message</label>
+                    <input id="confirmTxt" required>
 
+                    <div class="override-actions">
+                        <label for="duration">
+                            Disable restriction for
+                            <select name="time" id="duration">
+                                <option value="1">1 minute</option>
+                                <option value="2">2 minutes</option>
+                                <option value="3">3 minutes</option>
+                                <option value="4">4 minutes</option>
+                                <option value="5">5 minutes</option>
+                                <option value="15">15 minutes</option>
+                                <option value="30">30 minutes</option>
+                                <option value="120">120 minutes</option>
+                            </select>
+                        </label>
+                        <input type="submit" value="Go">
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
 
-
-
+<script type="text/javascript" src="pageContext.js"></script>
+<script type="text/javascript" src="rules.js"></script>
+<script type="text/javascript" src="warnScript.js"></script>
 </body>
-
-
-<script type = "text/javascript" src="warnScript.js"></script>
 </html>

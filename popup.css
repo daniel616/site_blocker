@@ -1,0 +1,72 @@
+/* Styles for popup.html — the browser-action panel */
+
+body {
+    width: 320px;
+    min-width: 320px;
+    background: var(--surface);
+}
+
+.popup-banner {
+    padding: var(--space-4) var(--space-5);
+    background: linear-gradient(135deg, var(--red-700), var(--red-600));
+    color: var(--white);
+}
+
+.popup-banner h1 {
+    margin: 0;
+    color: var(--white);
+    font-size: 1.15rem;
+}
+
+.popup-banner p {
+    margin: 2px 0 0;
+    color: rgba(255, 255, 255, .85);
+    font-size: .8rem;
+}
+
+.popup-body { padding: var(--space-4) var(--space-5) var(--space-5); }
+
+.popup-link {
+    display: block;
+    padding: 10px var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: .92rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.popup-link + .popup-link { margin-top: var(--space-2); }
+
+.popup-link.primary {
+    color: var(--white);
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.popup-link:hover {
+    color: var(--accent);
+    background: var(--red-050);
+    border-color: var(--red-500);
+}
+
+.popup-link.primary:hover {
+    color: var(--white);
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+}
+
+.popup-link .sub {
+    display: block;
+    color: var(--text-muted);
+    font-size: .78rem;
+    font-weight: 400;
+}
+
+.popup-link.primary .sub { color: rgba(255, 255, 255, .82); }
+
+.popup-link:hover .sub { color: var(--text-muted); }
+
+.popup-link.primary:hover .sub { color: rgba(255, 255, 255, .82); }

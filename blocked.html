@@ -2,17 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Site blocked</title>
+    <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="restricted.css">
 </head>
 <body>
 
-<p class="inline">The site </p>
-<p class="inline" id="site"></p>
-<p class="inline">was blocked because of the following rule:</p>
-<p id = "explanation"></p>
+<main class="page">
+    <div class="card flush">
+        <div class="banner">
+            <span class="badge">Blocked</span>
+            <h1>This site is blocked</h1>
+            <p>One of your restrictions matched this page, so it was not loaded.</p>
+        </div>
+        <div class="card-body">
+            <div class="field">
+                <span class="field-label">Requested site</span>
+                <p class="site" id="site"></p>
+            </div>
+            <div class="field">
+                <span class="field-label">Matching rule</span>
+                <pre class="rule" id="explanation"></pre>
+            </div>
+            <p class="hint">You set this rule yourself, at a moment when you could think clearly about
+                how you wanted to spend your time. Take the block as that earlier decision speaking.</p>
+        </div>
+    </div>
+</main>
 
+<script type="text/javascript" src="pageContext.js"></script>
+<script type="text/javascript" src="rules.js"></script>
+<script type="text/javascript" src="blocked.js"></script>
 </body>
-
-<script type = "text/javascript" src="blocked.js"></script>
 </html>
