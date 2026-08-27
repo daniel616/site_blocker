@@ -35,6 +35,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
            navigation. They are also remembered against the tab, so the page has
            something to fall back on if it is ever reached without them. */
         rememberRestrictionContext(tabId, siteURL, result.reason).then(function () {
+            console.log(siteURL, result.reason);
             chrome.tabs.update(tabId,
                 {url: restrictionPageURL(page, siteURL, result.reason)});
         });
